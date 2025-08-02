@@ -56,9 +56,25 @@ export default function BoardProvider({ children }) {
     saveBoards(updatedBoards);
   };
 
+  const updateTaskStatus = (boardId, taskId, newStatus) => {
+    const updatedBoards = boards.map((board) =>
+      board.id === boardId
+        ? {
+            ...board,
+            tasks: board.tasks.map((task) =>
+              task.id === taskId ? { ...task, status: newStatus } : task
+            ),
+          }
+        : board
+    );
+
+    setBoards(updatedBoards);
+    localStorage.setItem("boards", JSON.stringify(updatedBoards));
+  };
+
   return (
     <BoardContext.Provider
-      value={{ boards, addBoard, deleteBoard, addTask, deleteTask }}
+      value={{ boards, addBoard, deleteBoard, addTask, deleteTask, updateTaskStatus }}
     >
       {children}
     </BoardContext.Provider>
