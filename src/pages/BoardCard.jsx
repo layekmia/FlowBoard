@@ -1,10 +1,11 @@
 import { FaArrowUpRightFromSquare, FaDeleteLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import useBoard from "../hook/useBoard";
 
 export default function BoardCard({ board }) {
   const navigate = useNavigate();
+  const {deleteBoard} = useBoard();
 
-  console.log(board.color)
   return (
     <div
       key={board.id}
@@ -24,7 +25,7 @@ export default function BoardCard({ board }) {
       </div>
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-bold">created at: {board.createdAt}</p>
-        <button className="text-xl text-red-600">
+        <button onClick={() => deleteBoard(board.id)} className="text-xl text-red-600">
           <FaDeleteLeft />
         </button>
       </div>

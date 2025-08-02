@@ -1,6 +1,6 @@
 export default function Spinner() {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-white">
+    <div className="w-full h-screen flex items-center justify-center bg-gray-800">
       <div className="relative w-24 h-24">
         {[...Array(4)].map((_, i) => (
           <div

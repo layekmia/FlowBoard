@@ -2,12 +2,37 @@ import { useState } from "react";
 import logo from "../assets/logo.svg";
 import { IoIosLogOut } from "react-icons/io";
 import CreateBoardModal from "./CreateBoardModal";
+import { signOut } from "firebase/auth";
+import auth from "../config/firebase";
+import { toast } from "react-toastify";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const onClose = () => {
     setIsOpen(false);
+  };
+
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+      console.log("Successfully signed out.");
+    } catch (error) {
+      if (error.code) {
+        switch (error.code) {
+          case "auth/network-request-failed":
+            toast.error("Network error. Please check your connection.");
+            break;
+          case "auth/internal-error":
+            toast.error("Internal Firebase error.");
+            break;
+          default:
+            toast.error(`Unexpected Firebase auth error: ${error.code}`);
+        }
+      } else {
+        toast.error("An unknown error occurred while signing out:", error);
+      }
+    }
   };
 
   return (
@@ -23,7 +48,10 @@ export default function NavBar() {
           >
             Create board
           </button>
-          <button className="text-white flex items-center gap-2 font-semibold py-1 px-2 hover:bg-gray-700 transition-colors">
+          <button
+            onClick={logOut}
+            className="text-white flex items-center gap-2 font-semibold py-1 px-2 hover:bg-gray-700 transition-colors"
+          >
             <IoIosLogOut /> Logout
           </button>
         </div>
