@@ -1,36 +1,67 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { RxCross2 as X } from "react-icons/rx";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#14b8a6", "#cbd5e1"];
 
 export default function CreateBoardModal({ onClose }) {
+  const modalRef = useRef(null);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
-  const [boardName, setBoardName] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ boardName, selectedColor });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  // Set default color on mount
+  useEffect(() => {
+    setValue("color", COLORS[0]);
+  }, [setValue]);
+
+  const handleOverlayClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      onClose();
+    }
+  };
+
+  const handleColorSelect = (color) => {
+    setSelectedColor(color);
+    setValue("color", color); // sync with form
+  };
+
+  const handleAddNewBoard = (data) => {
+    console.log(data);
+    onClose(); // close modal on submit
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-neutral-800 p-6 rounded-md w-[380px] relative">
+    <div
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+      onClick={handleOverlayClick}
+    >
+      <div
+        ref={modalRef}
+        className="bg-neutral-800 p-6 rounded-md w-[380px] relative"
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-white text-lg font-semibold">Create Board</h2>
           <button onClick={onClose}>
-            <X className="text-white" />
+            <X className="text-white text-xl" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(handleAddNewBoard)}>
           <input
             type="text"
             placeholder="Board name"
-            value={boardName}
-            onChange={(e) => setBoardName(e.target.value)}
             className="w-full p-2 rounded-sm bg-transparent border border-white/50 text-white placeholder:text-white/60 mb-4"
-            required
+            {...register("boardName", { required: true })}
           />
+          {errors.boardName && (
+            <p className="text-red-400 text-sm mb-2">Board name is required</p>
+          )}
 
           <div className="mb-4">
             <label className="text-white mr-2">Color:</label>
@@ -39,7 +70,7 @@ export default function CreateBoardModal({ onClose }) {
                 <button
                   key={color}
                   type="button"
-                  onClick={() => setSelectedColor(color)}
+                  onClick={() => handleColorSelect(color)}
                   className={`w-6 h-6 rounded-full border-2 transition-all duration-200`}
                   style={{
                     backgroundColor: color,
@@ -49,9 +80,14 @@ export default function CreateBoardModal({ onClose }) {
                   }}
                 />
               ))}
-              <div className="w-6 h-6 rounded-full bg-gray-300"></div>
             </div>
           </div>
+
+          <input
+            type="hidden"
+            {...register("color", { required: true })}
+            value={selectedColor}
+          />
 
           <button
             type="submit"
