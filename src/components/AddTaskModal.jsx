@@ -5,7 +5,7 @@ import useBoard from "../hook/useBoard";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#14b8a6", "#cbd5e1"];
 
-export default function CreateBoardModal({ onClose, status }) {
+export default function AddTaskModal({ onClose, status, boardId }) {
   const modalRef = useRef(null);
   const {
     register,
@@ -27,7 +27,8 @@ export default function CreateBoardModal({ onClose, status }) {
   };
 
   const handleAddTask = (data) => {
-    console.log(data);
+    addTask(boardId, data.title, status);
+    onClose();
   };
 
   return (
@@ -45,16 +46,19 @@ export default function CreateBoardModal({ onClose, status }) {
             <X className="text-white text-xl" />
           </button>
         </div>
-        <p>status: {status}</p>
+        <p className="text-white font-medium mb-2">
+          Status:{" "}
+          <span className="py-1 px-2 rounded-full bg-gray-700">{status}</span>
+        </p>
         <form onSubmit={handleSubmit(handleAddTask)}>
           <input
             type="text"
-            placeholder="Board name"
+            placeholder="Task"
             className="w-full p-2 rounded-sm bg-transparent border border-white/50 text-white placeholder:text-white/60 mb-4"
-            {...register("boardName", { required: true })}
+            {...register("title", { required: true })}
           />
-          {errors.boardName && (
-            <p className="text-red-400 text-sm mb-2">Board name is required</p>
+          {errors.title && (
+            <p className="text-red-400 text-sm mb-2">Task Title is required</p>
           )}
 
           <button
