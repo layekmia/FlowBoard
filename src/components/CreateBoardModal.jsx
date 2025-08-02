@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { RxCross2 as X } from "react-icons/rx";
+import useBoard from "../hook/useBoard";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#14b8a6", "#cbd5e1"];
 
@@ -15,7 +16,8 @@ export default function CreateBoardModal({ onClose }) {
     formState: { errors },
   } = useForm();
 
-  // Set default color on mount
+  const { addBoard } = useBoard();
+
   useEffect(() => {
     setValue("color", COLORS[0]);
   }, [setValue]);
@@ -28,12 +30,12 @@ export default function CreateBoardModal({ onClose }) {
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
-    setValue("color", color); // sync with form
+    setValue("color", color);
   };
 
   const handleAddNewBoard = (data) => {
-    console.log(data);
-    onClose(); // close modal on submit
+    addBoard(data);
+    onClose();
   };
 
   return (
