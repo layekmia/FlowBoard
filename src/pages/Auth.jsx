@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import auth from "../config/firebase";
-import { toast } from "react-toastify";
+import toast  from "react-toastify";
 
 export default function Auth() {
   const {

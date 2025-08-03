@@ -37,7 +37,24 @@ export default function App() {
           />
         </Routes>
       </BrowserRouter>
-      <ToastContainer autoClose={2000} />
+      <Toaster
+        position="top-center"
+        gutter={12}
+        toastOptions={{
+          success: {
+            duration: 1000,
+            className:
+              "bg-green-100 text-green-800 text-base max-w-md px-6 py-4 rounded-md shadow-md",
+          },
+          error: {
+            duration: 3000,
+            className:
+              "bg-red-100 text-red-800 text-base max-w-md px-6 py-4 rounded-md shadow-md",
+          },
+          className:
+            "text-base max-w-md px-6 py-4 bg-white text-gray-700 rounded-md shadow-md",
+        }}
+      />
     </>
   );
 }

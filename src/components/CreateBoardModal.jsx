@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { RxCross2 as X } from "react-icons/rx";
-import useBoard from "../hook/useBoard";
+import useBoards from "../queryHook/useBoards";
+import useAuth from "../hook/useAuth";
+// import useBoard from "../hook/useBoard";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#14b8a6", "#cbd5e1"];
 
@@ -16,7 +18,9 @@ export default function CreateBoardModal({ onClose }) {
     formState: { errors },
   } = useForm();
 
-  const { addBoard } = useBoard();
+  // const { addBoard } = useBoard(); // it was from context which manage in localstorage;
+  const { createBoard } = useBoards();
+  const { user } = useAuth();
 
   useEffect(() => {
     setValue("color", COLORS[0]);
@@ -34,7 +38,12 @@ export default function CreateBoardModal({ onClose }) {
   };
 
   const handleAddNewBoard = (data) => {
-    addBoard(data);
+    // addBoard(data);
+    createBoard({
+      boardName: data.boardName,
+      color: data.color,
+      userEmail: user.email,
+    });
     onClose();
   };
 

@@ -1,9 +1,10 @@
 import NavBar from "../components/NavBar";
 import BoardCard from "./BoardCard";
-import useBoard from "../hook/useBoard";
+// import useBoard from "../hook/useBoard";
 
 export default function BoardCategories() {
-  const { boards } = useBoard();
+  // const { boards } = useBoard();
+  
 
   return (
     <div className="min-h-screen bg-[#1D1F26]">
