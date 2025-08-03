@@ -1,21 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DndContext } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
-import useBoard from "../hook/useBoard";
 import TaskColumn from "../components/TaskColumn";
 import { FaArrowLeft } from "react-icons/fa6";
+import { useQuery } from "@tanstack/react-query";
+import { getBoardById } from "../utils/BoardApi";
+import Spinner from "../components/Spinner";
+import useBoards from "../queryHook/useBoards";
 
 export default function Board() {
   const { id } = useParams();
-  const { boards, updateTaskStatus } = useBoard();
-  const board = boards.find((board) => board.id === Number(id));
+  const { data: board, isLoading } = useQuery({
+    queryKey: ["board", id],
+    queryFn: () => getBoardById(id),
+  });
+
+  const { updateTaskStatus } = useBoards();
   const navigate = useNavigate();
 
-  // Track dragging task and hover column
-  const [activeId, setActiveId] = useState(null); // dragged task id
-  const [overId, setOverId] = useState(null); // hovered column id (status)
+  // Local state for immediate UI sync
+  const [localTasks, setLocalTasks] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [overId, setOverId] = useState(null);
+
+  // Sync local state when backend data changes
+  useEffect(() => {
+    if (board?.tasks) setLocalTasks(board.tasks);
+  }, [board]);
 
   const handleDragStart = ({ active }) => {
     setActiveId(active.id);
@@ -27,8 +40,21 @@ export default function Board() {
 
   const handleDragEnd = ({ active, over }) => {
     if (over && active.id !== over.id) {
-      updateTaskStatus(board.id, Number(active.id), over.id);
+      // 1️⃣ Optimistically update UI
+      setLocalTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === active.id ? { ...task, status: over.id } : task
+        )
+      );
+
+      // 2️⃣ Send request to backend
+      updateTaskStatus({
+        boardId: board._id,
+        taskId: active.id,
+        status: over.id,
+      });
     }
+
     setActiveId(null);
     setOverId(null);
   };
@@ -37,6 +63,8 @@ export default function Board() {
     setActiveId(null);
     setOverId(null);
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="bg-[#1D1F26] min-h-screen">
@@ -63,7 +91,7 @@ export default function Board() {
           <TaskColumn
             title="Todos"
             status="todo"
-            tasks={board?.tasks || []}
+            tasks={localTasks}
             board={board}
             activeId={activeId}
             overId={overId}
@@ -71,7 +99,7 @@ export default function Board() {
           <TaskColumn
             title="Progress"
             status="progress"
-            tasks={board?.tasks || []}
+            tasks={localTasks}
             board={board}
             activeId={activeId}
             overId={overId}
@@ -79,7 +107,7 @@ export default function Board() {
           <TaskColumn
             title="Completed"
             status="completed"
-            tasks={board?.tasks || []}
+            tasks={localTasks}
             board={board}
             activeId={activeId}
             overId={overId}

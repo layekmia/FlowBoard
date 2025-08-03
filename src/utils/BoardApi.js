@@ -14,9 +14,20 @@ export const getBoards = async (email) => {
   }
 };
 
+
+export const getBoardById = async (boardId) => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/boards/${boardId}`);
+    return data;
+  } catch (error) {
+    console.error("Error fetching board by ID:", error);
+    throw error;
+  }
+};
+
 export const createBoard = async (boardData) => {
   try {
-    const { data } = await axios.post(`${BASE_URL}/boards`, boardData);
+    const { data } = await axios.post(`${BASE_URL}/board`, boardData);
     return data;
   } catch (error) {
     console.error("Error adding board:", error);
@@ -36,7 +47,7 @@ export const deleteBoard = async (boardId) => {
 
 export const addTask = async (boardId, taskData) => {
   try {
-    const { data } = await axios.post(
+    const { data } = await axios.patch(
       `${BASE_URL}/boards/add-task/${boardId}`,
       taskData
     );

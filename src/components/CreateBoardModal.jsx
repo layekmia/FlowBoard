@@ -1,30 +1,18 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, } from "react";
 import { useForm } from "react-hook-form";
 import { RxCross2 as X } from "react-icons/rx";
 import useBoards from "../queryHook/useBoards";
 import useAuth from "../hook/useAuth";
-// import useBoard from "../hook/useBoard";
+import toast from "react-hot-toast";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#14b8a6", "#cbd5e1"];
 
 export default function CreateBoardModal({ onClose }) {
   const modalRef = useRef(null);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-  // const { addBoard } = useBoard(); // it was from context which manage in localstorage;
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { createBoard } = useBoards();
   const { user } = useAuth();
-
-  useEffect(() => {
-    setValue("color", COLORS[0]);
-  }, [setValue]);
 
   const handleOverlayClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -32,19 +20,25 @@ export default function CreateBoardModal({ onClose }) {
     }
   };
 
-  const handleColorSelect = (color) => {
-    setSelectedColor(color);
-    setValue("color", color);
-  };
+  const handleColorSelect = (color) => setSelectedColor(color);
 
   const handleAddNewBoard = (data) => {
-    // addBoard(data);
-    createBoard({
-      boardName: data.boardName,
-      color: data.color,
-      userEmail: user.email,
-    });
-    onClose();
+    createBoard(
+      {
+        boardName: data.boardName,
+        color: selectedColor,
+        userEmail: user.email,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Board created successfully!");
+          onClose();
+        },
+        onError: () => {
+          toast.error("Failed to create board!");
+        },
+      }
+    );
   };
 
   return (
@@ -56,6 +50,7 @@ export default function CreateBoardModal({ onClose }) {
         ref={modalRef}
         className="bg-neutral-800 p-6 rounded-md w-[380px] relative"
       >
+        {/* Modal Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-white text-lg font-semibold">Create Board</h2>
           <button onClick={onClose}>
@@ -63,6 +58,7 @@ export default function CreateBoardModal({ onClose }) {
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit(handleAddNewBoard)}>
           <input
             type="text"
@@ -74,6 +70,7 @@ export default function CreateBoardModal({ onClose }) {
             <p className="text-red-400 text-sm mb-2">Board name is required</p>
           )}
 
+          {/* Color Picker */}
           <div className="mb-4">
             <label className="text-white mr-2">Color:</label>
             <div className="flex items-center gap-3 mt-2">
@@ -82,11 +79,10 @@ export default function CreateBoardModal({ onClose }) {
                   key={color}
                   type="button"
                   onClick={() => handleColorSelect(color)}
-                  className={`w-6 h-6 rounded-full border-2 transition-all duration-200`}
+                  className="w-6 h-6 rounded-full border-2 transition-all duration-200"
                   style={{
                     backgroundColor: color,
-                    borderColor:
-                      selectedColor === color ? "white" : "transparent",
+                    borderColor: selectedColor === color ? "white" : "transparent",
                     boxShadow: selectedColor === color ? "0 0 0 2px white" : "",
                   }}
                 />
@@ -94,12 +90,7 @@ export default function CreateBoardModal({ onClose }) {
             </div>
           </div>
 
-          <input
-            type="hidden"
-            {...register("color", { required: true })}
-            value={selectedColor}
-          />
-
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full py-2 bg-purple-400 text-black font-semibold rounded-md hover:bg-purple-500"

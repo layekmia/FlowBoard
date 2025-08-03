@@ -1,82 +1,82 @@
-// BoardContext.js
-import { createContext, useState } from "react";
-import { saveBoards } from "../utils/helper";
+// // BoardContext.js
+// import { createContext, useState } from "react";
+// import { saveBoards } from "../utils/helper";
 
-export const BoardContext = createContext();
+// export const BoardContext = createContext();
 
-export default function BoardProvider({ children }) {
-  const [boards, setBoards] = useState(() => {
-    const saved = localStorage.getItem("boards");
-    return saved ? JSON.parse(saved) : [];
-  });
+// export default function BoardProvider({ children }) {
+//   const [boards, setBoards] = useState(() => {
+//     const saved = localStorage.getItem("boards");
+//     return saved ? JSON.parse(saved) : [];
+//   });
 
-  const addBoard = (newBoardData) => {
-    const newBoard = {
-      id: Date.now(),
-      ...newBoardData,
-      tasks: [],
-      createdAt: new Date().toLocaleString(),
-    };
+//   const addBoard = (newBoardData) => {
+//     const newBoard = {
+//       id: Date.now(),
+//       ...newBoardData,
+//       tasks: [],
+//       createdAt: new Date().toLocaleString(),
+//     };
 
-    const updated = [...boards, newBoard];
-    setBoards(updated);
-    saveBoards(updated);
-  };
+//     const updated = [...boards, newBoard];
+//     setBoards(updated);
+//     saveBoards(updated);
+//   };
 
-  const deleteBoard = (boardId) => {
-    const filteredBoards = boards.filter((board) => board.id !== boardId);
-    saveBoards(filteredBoards);
-    setBoards(filteredBoards);
-  };
+//   const deleteBoard = (boardId) => {
+//     const filteredBoards = boards.filter((board) => board.id !== boardId);
+//     saveBoards(filteredBoards);
+//     setBoards(filteredBoards);
+//   };
 
-  // Add new task to a specific board
-  const addTask = (boardId, title, status) => {
-    const updatedBoards = boards.map((board) =>
-      board.id === boardId
-        ? {
-            ...board,
-            tasks: [...board.tasks, { id: Date.now(), title, status }],
-          }
-        : board
-    );
+//   // Add new task to a specific board
+//   const addTask = (boardId, title, status) => {
+//     const updatedBoards = boards.map((board) =>
+//       board.id === boardId
+//         ? {
+//             ...board,
+//             tasks: [...board.tasks, { id: Date.now(), title, status }],
+//           }
+//         : board
+//     );
 
-    setBoards(updatedBoards);
-    saveBoards(updatedBoards);
-  };
+//     setBoards(updatedBoards);
+//     saveBoards(updatedBoards);
+//   };
 
-  // Delete a task from a specific board
-  const deleteTask = (boardId, taskId) => {
-    const updatedBoards = boards.map((board) =>
-      board.id === boardId
-        ? { ...board, tasks: board.tasks.filter((task) => task.id !== taskId) }
-        : board
-    );
+//   // Delete a task from a specific board
+//   const deleteTask = (boardId, taskId) => {
+//     const updatedBoards = boards.map((board) =>
+//       board.id === boardId
+//         ? { ...board, tasks: board.tasks.filter((task) => task.id !== taskId) }
+//         : board
+//     );
 
-    setBoards(updatedBoards);
-    saveBoards(updatedBoards);
-  };
+//     setBoards(updatedBoards);
+//     saveBoards(updatedBoards);
+//   };
 
-  const updateTaskStatus = (boardId, taskId, newStatus) => {
-    const updatedBoards = boards.map((board) =>
-      board.id === boardId
-        ? {
-            ...board,
-            tasks: board.tasks.map((task) =>
-              task.id === taskId ? { ...task, status: newStatus } : task
-            ),
-          }
-        : board
-    );
+//   const updateTaskStatus = (boardId, taskId, newStatus) => {
+//     const updatedBoards = boards.map((board) =>
+//       board.id === boardId
+//         ? {
+//             ...board,
+//             tasks: board.tasks.map((task) =>
+//               task.id === taskId ? { ...task, status: newStatus } : task
+//             ),
+//           }
+//         : board
+//     );
 
-    setBoards(updatedBoards);
-    localStorage.setItem("boards", JSON.stringify(updatedBoards));
-  };
+//     setBoards(updatedBoards);
+//     localStorage.setItem("boards", JSON.stringify(updatedBoards));
+//   };
 
-  return (
-    <BoardContext.Provider
-      value={{ boards, addBoard, deleteBoard, addTask, deleteTask, updateTaskStatus }}
-    >
-      {children}
-    </BoardContext.Provider>
-  );
-}
+//   return (
+//     <BoardContext.Provider
+//       value={{ boards, addBoard, deleteBoard, addTask, deleteTask, updateTaskStatus }}
+//     >
+//       {children}
+//     </BoardContext.Provider>
+//   );
+// }

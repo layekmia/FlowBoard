@@ -1,7 +1,7 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { RxCross2 as X } from "react-icons/rx";
-import useBoard from "../hook/useBoard";
+import useBoards from "../queryHook/useBoards";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#14b8a6", "#cbd5e1"];
 
@@ -14,7 +14,7 @@ export default function AddTaskModal({ onClose, status, boardId }) {
     formState: { errors },
   } = useForm();
 
-  const { addTask } = useBoard();
+  const { addTask } = useBoards();
 
   useEffect(() => {
     setValue("color", COLORS[0]);
@@ -27,7 +27,7 @@ export default function AddTaskModal({ onClose, status, boardId }) {
   };
 
   const handleAddTask = (data) => {
-    addTask(boardId, data.title, status);
+    addTask({ boardId, taskData: { title: data.title, status } });
     onClose();
   };
 
@@ -46,15 +46,17 @@ export default function AddTaskModal({ onClose, status, boardId }) {
             <X className="text-white text-xl" />
           </button>
         </div>
+
         <p className="text-white font-medium mb-2">
           Status:{" "}
           <span className="py-1 px-2 rounded-full bg-gray-700">{status}</span>
         </p>
+
         <form onSubmit={handleSubmit(handleAddTask)}>
           <input
             type="text"
             placeholder="Task"
-            className="w-full p-2 rounded-sm bg-transparent border border-white/50 text-white placeholder:text-white/60 mb-4"
+            className="w-full p-2 mb-4 rounded-sm bg-transparent border border-white/50 text-white placeholder:text-white/60"
             {...register("title", { required: true })}
           />
           {errors.title && (

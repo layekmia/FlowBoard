@@ -4,7 +4,7 @@ import { IoIosLogOut } from "react-icons/io";
 import CreateBoardModal from "./CreateBoardModal";
 import { signOut } from "firebase/auth";
 import auth from "../config/firebase";
-import { toast } from "react-hot-toast";
+import  toast  from "react-hot-toast";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
