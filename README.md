@@ -10,6 +10,9 @@ Built with **React.js**, it integrates with the backend API to store boards and 
 
 ---
 
+🔗 <a href="https://flow-board-two.vercel.app" target="_blank">Live Site</a>  
+📂 <a href="https://github.com/layekmia/FlowBoard-Server.git" target="_blank">Backend Repository</a>
+
 ## 🚀 Features
 - User authentication (via Firebase)
 - Create, update, and delete boards
