@@ -11,13 +11,13 @@ Built with **React.js**, it integrates with the backend API to store boards and 
 ---
 
 ## 🚀 Features
-- Create new boards with colors and names.
-- Add tasks to specific boards with status (`todo`, `progress`, `completed`).
-- Drag and drop tasks between columns using `@dnd-kit`.
-- Delete tasks from any column.
-- Automatically sync data with backend or local storage.
-- Responsive design with **Tailwind CSS**.
-
+- User authentication (via Firebase)
+- Create, update, and delete boards
+- Add, update, delete tasks
+- Drag-and-drop tasks between columns with instant UI updates
+- Optimistic UI updates (instant UI changes before backend confirmation)
+- Backend sync (MongoDB + Express)
+- Toast notifications for actions
 ---
 
 ## 🛠️ Tech Stack
