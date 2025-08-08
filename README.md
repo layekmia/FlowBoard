@@ -1,5 +1,3 @@
-Here’s a **complete README.md** for your **Kanban Frontend** repo. It's clean, professional, and ready to copy-paste:
-
 ---
 
 # 🖥️ Kanban Board Frontend
