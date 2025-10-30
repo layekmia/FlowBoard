@@ -33,7 +33,6 @@ Built with **React.js**, it integrates with the backend API to store boards and 
 
 ## 📂 Project Structure
 ```
-
 kanban-frontend/
 ├── src/
 │   ├── components/
